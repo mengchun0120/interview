@@ -6,6 +6,7 @@ SRC_DIR=src
 all: \
 	$(BUILD_DIR)/1_1 \
 	$(BUILD_DIR)/1_2 \
+	$(BUILD_DIR)/1_3 \
 
 $(BUILD_DIR)/%: $(SRC_DIR)/%.cpp
 	@if [ ! -d "$(BUILD_DIR)" ]; then \

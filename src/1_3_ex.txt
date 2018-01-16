@@ -1,0 +1,3 @@
+str="aa bb cc dd ee ff aa cc dd"
+str="cc bb dd aa ee ff aa cc dd"
+words=["aa", "cc", "dd"]
