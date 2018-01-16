@@ -52,7 +52,11 @@ bool removeNeighborDuplicateByReordering(char* str, int len)
                 if(dupStart >= i) {
                     dupStart = -1;
                     searchStart = -2;
+                } else {
+                    searchStart = (j > 0) ? (j-2) : -1;
                 }
+            } else {
+                searchStart = -1;
             }
         }
     }
