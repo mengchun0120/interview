@@ -13,6 +13,7 @@ bool removeNeighborDuplicateByReordering(char* str, int len)
     }
 
     int dupStart = -1;
+    int searchStart = -2;
     char tmp;
 
     for(int i = 1; i < len; ++i) {
@@ -21,8 +22,10 @@ bool removeNeighborDuplicateByReordering(char* str, int len)
                 tmp = str[i];
                 str[i] = str[dupStart+1];
                 str[dupStart+1] = tmp;
+
                 dupStart += 2;
-                if(dupStart >= i-1) {
+                if(dupStart >= i) {
+                    searchStart = -2;
                     dupStart = -1;
                 }
             }
@@ -31,21 +34,24 @@ bool removeNeighborDuplicateByReordering(char* str, int len)
                 dupStart = i-1;
             }
 
-            int j;
-            for(j = dupStart-1; j >= 0; --j) {
-                if((j == 0 || str[j-1] != str[i]) &&
-                   (j == dupStart-1 || str[j+1] != str[i])) {
+            int j = (searchStart == -2) ? dupStart-2 : searchStart;
+            for(; j >= 0; --j) {
+                if(str[j] != str[i] &&
+                   (j == 0 || str[j-1] != str[i]) &&
+                   str[j+1] != str[i]) {
                     break;
                 }
             }
 
             if(j >= 0) {
-                tmp = str[i];
-                str[i] = str[dupStart+1];
+                tmp = str[j];
+                str[j] = str[dupStart+1];
                 str[dupStart+1] = tmp;
+
                 dupStart += 2;
                 if(dupStart >= i) {
                     dupStart = -1;
+                    searchStart = -2;
                 }
             }
         }
@@ -57,7 +63,7 @@ bool removeNeighborDuplicateByReordering(char* str, int len)
 bool hasSameChars(const char *s1, const char *s2, int len)
 {
     std::unordered_map<char,int> charMap1, charMap2;
-    std::unordered_map::iterator it1, it2;
+    std::unordered_map<char,int>::iterator it1, it2;
     int i;
 
     for(i = 0; i < len; ++i) {
@@ -111,7 +117,7 @@ void test(const char *str, bool expect_result)
     bool ret = removeNeighborDuplicateByReordering(str_copy, len);
     assert(ret == expect_result);
     if(expect_result) {
-        assert(hasSameChars(str, str_copy));
+        assert(hasSameChars(str, str_copy, len));
         assert(!hasNeighborDuplicate(str_copy, len));
     }
 }
@@ -129,4 +135,12 @@ int main(int argc, char* argv[])
 
     char s3[] = "aaaabbbccc";
     test(s3, true);
+
+    char s4[] = "aaaaaa";
+    test(s4, false);
+
+    char s5[] = "abababaaaaaaaaa";
+    test(s5, false);
+
+    std::cout << "1_2 all test passed" << std::endl;
 }

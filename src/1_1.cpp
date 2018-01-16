@@ -27,4 +27,6 @@ int main(int argc, char* argv[])
 
     int a4[] = {1, 1, 2, 4, 5};
     assert(lastDuplicate(a4, 5) == 1);
+
+    std::cout << "1_1 all tests passed" << std::endl;
 }
