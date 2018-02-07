@@ -96,5 +96,40 @@ void expand(string& output, const string& pattern)
 
 int main(int argc, char* argv[])
 {
+    string p1("");
+    string o1;
+    expand(o1, p1);
+    assert(o1 == "");
+    cout << "test1 successful" << endl;
+
+    string p2("2[]");
+    string o2;
+    expand(o2, p2);
+    assert(o2 == "");
+    cout << "test2 successful" << endl;
+
+    string p3("3[a]");
+    string o3;
+    expand(o3, p3);
+    assert(o3 == "aaa");
+    cout << "test3 successful" << endl;
+
+    string p4("def3[abc]");
+    string o4;
+    expand(o4, p4);
+    assert(o4 == "defabcabcabc");
+    cout << "test4 successful" << endl;
+
+    string p5("d2[a2[bc]]");
+    string o5;
+    expand(o5, p5);
+    assert(o5 == "dabcbcabcbc");
+    cout << "test5 successful" << endl;
+
+    string p6("def2[a2[b2[c]]]gh2[ac2[bf]]");
+    string o6;
+    expand(o6, p6);
+    assert(o6 == "defabccbccabccbccghacbfbfacbfbf");
+    cout << "test6 successful" << endl;
 }
 
