@@ -9,7 +9,8 @@ all: \
 	$(BUILD_DIR)/1_3 \
 	$(BUILD_DIR)/1_4 \
 	$(BUILD_DIR)/1_6 \
-	$(BUILD_DIR)/1_7
+	$(BUILD_DIR)/1_7 \
+	$(BUILD_DIR)/1_8
 
 $(BUILD_DIR)/%: $(SRC_DIR)/%.cpp
 	@if [ ! -d "$(BUILD_DIR)" ]; then \
