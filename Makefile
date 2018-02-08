@@ -10,7 +10,12 @@ all: \
 	$(BUILD_DIR)/1_4 \
 	$(BUILD_DIR)/1_6 \
 	$(BUILD_DIR)/1_7 \
-	$(BUILD_DIR)/1_8
+	$(BUILD_DIR)/1_8 \
+	$(BUILD_DIR)/1_9 \
+	$(BUILD_DIR)/1_10 \
+	$(BUILD_DIR)/1_11 \
+	$(BUILD_DIR)/1_12 \
+	$(BUILD_DIR)/1_14
 
 $(BUILD_DIR)/%: $(SRC_DIR)/%.cpp
 	@if [ ! -d "$(BUILD_DIR)" ]; then \
