@@ -216,8 +216,5 @@ int main(int argc, char *argv[])
     vector<int> r1{0, 1, 2, 3, 4, 5, 6};
     sort(a1, 2);
     assert(a1 == r1);
-
-    :w
-
 }
 
