@@ -43,6 +43,26 @@ struct UserRecord {
     {}
 };
 
+ostream& operator<<(ostream& os, const Feed& f)
+{
+    os << "Feed(" << f.tweetId << ',' << f.time << ')';
+    return os;
+}
+
+template <typename T>
+ostream& operator<<(ostream& os, const vector<T>& v)
+{
+    os << '[';
+    if(v.size() > 0) {
+        os << v[0];
+        for(unsigned int i = 1; i < v.size(); ++i) {
+            os << ", " << v[i];
+        }
+    }
+    os << ']';
+    return os;
+}
+
 struct HeapRecord {
     list<Feed>* feeds;
     list<Feed>::iterator it;
@@ -68,7 +88,8 @@ class Twitter {
 public:
     Twitter();
 
-    ~Twitter();
+    ~Twitter()
+    {}
 
     void postTweet(int userId, int tweetId);
 
@@ -104,16 +125,16 @@ void Twitter::heapifyUp(vector<HeapRecord>& heap, int idx)
 {
     HeapRecord r(heap[idx]);
     int i = idx;
-    int parent = (i - 1) / 2;
 
-    while(parent >= 0) {
+    while(i > 0) {
+        int parent = (i - 1) / 2;
         HeapRecord& p = heap[parent];
+
         if(p.it->time >= r.it->time)
             break;
 
         heap[i] = p;
         i = parent;
-        parent = (i - 1) / 2;
     }
 
     if(idx != i)
@@ -141,7 +162,6 @@ void Twitter::heapifyDown(vector<HeapRecord>& heap, int idx, int heapSize)
             HeapRecord& right = heap[rightIdx];
             if(right.it->time > maxTime) {
                 maxIdx = rightIdx;
-                maxTime = right.it->time;
             }
         }
 
@@ -149,11 +169,12 @@ void Twitter::heapifyDown(vector<HeapRecord>& heap, int idx, int heapSize)
             break;
 
         heap[i] = heap[maxIdx];
+        i = maxIdx;
         leftIdx = 2 * i + 1;
     }
 
     if(i != idx)
-        heap[idx] = r;
+        heap[i] = r;
 }
 
 void Twitter::initHeap(vector<HeapRecord>& heap, int userId)
@@ -235,4 +256,46 @@ void Twitter::unfollow(int followerId, int followeeId)
 
 int main()
 {
+    Twitter twitter;
+    twitter.postTweet(1, 8);
+    twitter.postTweet(1, 9);
+    twitter.postTweet(2, 10);
+    twitter.postTweet(2, 11);
+    twitter.postTweet(3, 12);
+    twitter.postTweet(3, 13);
+    twitter.postTweet(4, 5);
+    twitter.postTweet(4, 6);
+    twitter.postTweet(5, 7);
+    twitter.postTweet(5, 1);
+    twitter.postTweet(6, 2);
+    twitter.postTweet(7, 3);
+    twitter.postTweet(7, 4);
+    twitter.postTweet(8, 14);
+    twitter.postTweet(8, 15);
+    twitter.follow(1, 2);
+    twitter.follow(1, 3);
+    twitter.follow(1, 4);
+
+    vector<int> feeds1;
+    twitter.getNewsFeed(feeds1, 1);
+    cout << feeds1 << endl;
+
+    twitter.follow(1, 5);
+    twitter.follow(1, 6);
+    twitter.follow(1, 7);
+
+    vector<int> feeds2;
+    twitter.getNewsFeed(feeds2, 1);
+    cout << feeds2 << endl;
+
+    twitter.follow(8, 1);
+    twitter.follow(8, 2);
+    twitter.follow(8, 7);
+    twitter.follow(8, 6);
+    twitter.follow(8, 5);
+    twitter.follow(8, 3);
+
+    vector<int> feeds3;
+    twitter.getNewsFeed(feeds3, 8);
+    cout << feeds3 << endl;
 }
