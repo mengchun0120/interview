@@ -13,15 +13,22 @@ Note: you may assume that all words consist of lowercase letters a-z.
 #include <cassert>
 #include <string>
 #include <list>
-#include <vector>
+#include <iostream>
 #include <unordered_set>
+#include <unordered_map>
 
 using namespace std;
 
 struct Record {
-    bool visited;
-    unordered_set<int> nextIndices;
+    bool hasEnd;
+    unordered_set<char> next;
+
+    Record()
+    : hasEnd(false)
+    {}
 };
+
+typedef unordered_map<char, Record> RecordMap;
 
 class WordLib {
 public:
@@ -31,59 +38,124 @@ public:
     ~WordLib()
     {}
 
-    void addWord(const string& word);
+    void add(const string& word);
 
     bool search(const string& word);
 
 private:
-    static const unsigned int NUM_LETTERS;
-
-private:
-    list<vector<Record>> lib;
+    list<RecordMap> lib;
 };
 
-const unsigned int WordLib::NUM_LETTERS = 'z' - 'a' + 1;
-
-void WordLib::addWord(const string& word)
+void WordLib::add(const string& word)
 {
     if(lib.size() < word.size()) {
         unsigned int k = word.size() - lib.size();
         for(unsigned int i = 0; i < k; ++i) {
-            lib.emplace_back(NUM_LETTERS);
+            lib.emplace_back();
         }
     }
 
-    auto it = lib.begin();
+    auto libIt = lib.begin();
     unsigned int i;
 
-    for(i = 0; i < word.size() - 1; ++i) {
-        Record& r = (*it)[i];
-        r.nextIndices.insert(word[i] - 'a');
-        ++it;
+    for(i = 0; i < word.size() - 1; ++i, ++libIt) {
+        Record& r = (*libIt)[word[i]];
+        r.next.insert(word[i+1]);
     }
 
-    Record& r = (*it)[i];
-    r.nextIndices.insert(-1);
+    Record& e = (*libIt)[word[i]];
+    e.hasEnd = true;
 }
 
 bool WordLib::search(const string& word)
 {
-    unordered_set<int> links1, links2;
-    unordered_set<int>* p;
-    unsigned int i;
-    auto it = lib.begin();
+    if(word.size() > lib.size())
+        return false;
 
-    p = &links1;
-    i = 0;
-    if(word.size() > 1) {
-        if(word[0] != '0') {
-            int idx = word[0] - 'a';
-            Record& r = (*it)[idx];
-            r.
+    unordered_set<char> match1, match2;
+    unordered_set<char> *p = &match1;
+    auto libIt = lib.begin();
+    unsigned int i;
+
+    if(word[0] != '.') {
+        auto it = libIt->find(word[0]);
+        if(it == libIt->end())
+            return false;
+
+        Record& r = it->second;
+        if(word.size() == 1)
+            return r.hasEnd;
+
+        p->insert(r.next.begin(), r.next.end());
+    } else {
+        if(word.size() == 1) {
+            for(auto it = libIt->begin(); it != libIt->end(); ++it) {
+                Record& r = it->second;
+                if(r.hasEnd)
+                    return true;
+            }
+            return false;
+        }
+
+        for(auto it = libIt->begin(); it != libIt->end(); ++it) {
+            Record& r = it->second;
+            p->insert(r.next.begin(), r.next.end());
         }
     }
+
+    ++libIt;
+    for(i = 1; i < word.size() - 1; ++i, ++libIt) {
+        unordered_set<char> *n = (p == &match1) ? &match2 : &match1;
+        n->clear();
+        if(word[i] != '.') {
+            auto it = p->find(word[i]);
+            if(it == p->end())
+                return false;
+
+            Record& r = (*libIt)[word[i]];
+            n->insert(r.next.begin(), r.next.end());
+        } else {
+            for(auto it = p->begin(); it != p->end(); ++it) {
+                Record& r = (*libIt)[*it];
+                n->insert(r.next.begin(), r.next.end());
+            }
+        }
+        p = n;
+    }
+
+    if(word[i] != '.') {
+        auto it = p->find(word[i]);
+        if(it == p->end())
+            return false;
+
+        Record& r = (*libIt)[word[i]];
+        return r.hasEnd;
+    }
+
+    for(auto it = p->begin(); it != p->end(); ++it) {
+        Record& r = (*libIt)[*it];
+        if(r.hasEnd)
+            return true;
+    }
+    return false;
 }
 
 int main()
 {
+    WordLib lib;
+    lib.add("a");
+    assert(lib.search("a"));
+    assert(lib.search("."));
+
+    lib.add("abc");
+    lib.add("abd");
+    lib.add("cast");
+    lib.add("word");
+    lib.add("will");
+    lib.add("wors");
+    assert(!lib.search("ab"));
+    assert(!lib.search("acd"));
+    assert(lib.search("wors"));
+    assert(lib.search(".or."));
+    assert(lib.search("..."));
 }
