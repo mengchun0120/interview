@@ -47,12 +47,10 @@ void spiralMatrix3(vector<vector<int>>& positions, int R, int C, int r0, int c0)
                         positions[count].resize(2);
                         positions[count][0] = r;
                         positions[count][1] = c;
-                        cout << r << ' ' << c << endl;
                         ++count;
                     }
                     c = right;
                 }
-                cout << "east " << r << " " << c << endl;
             }
             r++;
             break;
@@ -70,12 +68,10 @@ void spiralMatrix3(vector<vector<int>>& positions, int R, int C, int r0, int c0)
                         positions[count].resize(2);
                         positions[count][0] = r;
                         positions[count][1] = c;
-                        cout << r << ' ' << c << endl;
                         ++count;
                     }
                     r = bottom;
                 }
-                cout << "south " << r << " " << c << endl;
             }
             c--;
             break;
@@ -93,12 +89,10 @@ void spiralMatrix3(vector<vector<int>>& positions, int R, int C, int r0, int c0)
                         positions[count].resize(2);
                         positions[count][0] = r;
                         positions[count][1] = c;
-                        cout << r << ' ' << c << endl;
                         ++count;
                     }
                     c = left;
                 }
-                cout << "west " << r << " " << c << endl;
             }
             r--;
             break;
@@ -116,12 +110,10 @@ void spiralMatrix3(vector<vector<int>>& positions, int R, int C, int r0, int c0)
                         positions[count].resize(2);
                         positions[count][0] = r;
                         positions[count][1] = c;
-                        cout << r << ' ' << c << endl;
                         ++count;
                     }
                     r = top;
                 }
-                cout << "north " << r << " " << c << endl;
             }
             c++;
             break;
@@ -148,4 +140,12 @@ int main()
     vector<vector<int>> p1;
     spiralMatrix3(p1, 1, 4, 0, 0);
     cout << p1 << endl;
+
+    vector<vector<int>> p2;
+    spiralMatrix3(p2, 4, 4, 1, 1);
+    cout << p2 << endl;
+
+    vector<vector<int>> p3;
+    spiralMatrix3(p3, 4, 4, 0, 3);
+    cout << p3 << endl;
 }
